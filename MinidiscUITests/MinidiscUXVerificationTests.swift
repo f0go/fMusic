@@ -236,6 +236,77 @@ final class MinidiscUXVerificationTests: XCTestCase {
         return (result["playlist"] as? [String: Any])?["id"] as? String
     }
 
+    func testFixtureQueueMusicalMixButtonLargeText() async throws {
+        _ = try await openEditableFixtureQueue()
+        app.terminate()
+        app.launchArguments += ["-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL"]
+        app.launch()
+        let mini = app.staticTexts["player.mini.title"].firstMatch
+        try requireHittable(mini)
+        mini.tap()
+        try tap(app.buttons["File d'attente"], named: "large-queue-open")
+        let mix = app.buttons["player.queue.musicalMix"]
+        try requireHittable(mix)
+        if !mix.isSelected { mix.tap() }
+        let enabled = XCTNSPredicateExpectation(predicate: NSPredicate(format: "selected == true"), object: mix)
+        XCTAssertEqual(XCTWaiter.wait(for: [enabled], timeout: 5), .completed)
+        captureHierarchy("queue-four-buttons-large-text")
+        print("UX_STEP queue-musical-mix-large-ready")
+        try await Task.sleep(for: .seconds(12))
+    }
+
+    func testFixtureQueueMusicalMixButton() async throws {
+        _ = try await openEditableFixtureQueue()
+        let mix = app.buttons["player.queue.musicalMix"]
+        try requireHittable(mix)
+        if mix.isSelected { mix.tap() }
+        XCTAssertTrue(mix.waitForExistence(timeout: 3))
+        mix.tap()
+        let enabled = XCTNSPredicateExpectation(predicate: NSPredicate(format: "selected == true"), object: mix)
+        XCTAssertEqual(XCTWaiter.wait(for: [enabled], timeout: 5), .completed)
+        captureHierarchy("queue-four-buttons-mix-enabled")
+        print("UX_STEP queue-musical-mix-ready")
+        try await Task.sleep(for: .seconds(12))
+        mix.tap()
+        let disabled = XCTNSPredicateExpectation(predicate: NSPredicate(format: "selected == false"), object: mix)
+        XCTAssertEqual(XCTWaiter.wait(for: [disabled], timeout: 5), .completed)
+    }
+
+    func testFixtureMusicalMixSettings() async throws {
+        try await launchFixtureApp()
+        app.terminate()
+        app.launchArguments = ["-AppleLanguages", "(es)", "-AppleLocale", "es_ES"]
+        app.launch()
+        try tap(app.buttons["Ajustes"], named: "mix-settings")
+        try tap(app.buttons["Reproducción"], named: "mix-playback-settings")
+        let toggle = app.switches["settings.musicalMix"]
+        for _ in 0..<5 where !toggle.isHittable { app.swipeUp() }
+        try requireHittable(toggle)
+        if toggle.value as? String != "1" {
+            toggle.coordinate(withNormalizedOffset: CGVector(dx: 0.92, dy: 0.5)).tap()
+        }
+        captureHierarchy("mix-after-toggle")
+        let enabled = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == '1'"), object: toggle)
+        XCTAssertEqual(XCTWaiter.wait(for: [enabled], timeout: 5), .completed)
+        XCTAssertTrue(app.staticTexts["Mezcla musical (Beta)"].exists)
+        app.swipeUp()
+        captureHierarchy("musical-mix-spanish-visible")
+        print("UX_STEP musical-mix-spanish-ready")
+        try await Task.sleep(for: .seconds(12))
+        app.terminate()
+        app.launchArguments += ["-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL"]
+        app.launch()
+        try tap(app.buttons["Ajustes"], named: "mix-settings-large")
+        try tap(app.buttons["Reproducción"], named: "mix-playback-large")
+        for _ in 0..<7 where !toggle.isHittable { app.swipeUp() }
+        try requireHittable(toggle)
+        XCTAssertEqual(toggle.value as? String, "1")
+        app.swipeUp()
+        captureHierarchy("musical-mix-large-visible")
+        print("UX_STEP musical-mix-large-ready")
+        try await Task.sleep(for: .seconds(12))
+    }
+
     func testLocalFixtureOnboarding() async throws {
         try await launchFixtureApp()
     }

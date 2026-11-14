@@ -2,6 +2,7 @@ import Foundation
 import Observation
 
 nonisolated struct CrossfadeConfig: Sendable {
+    var musicalMixEnabled: Bool = false
     let duration: Double
     let disableForGapless: Bool
 }
@@ -13,6 +14,10 @@ final class CrossfadeSettings {
     @ObservationIgnored private let defaults: UserDefaults
     @ObservationIgnored private var _duration: Double
     @ObservationIgnored private var _disableForGapless: Bool
+
+    var musicalMixEnabled: Bool {
+        didSet { defaults.set(musicalMixEnabled, forKey: "minidisc.musicalMix.enabled") }
+    }
 
     var duration: Double {
         get {
@@ -49,11 +54,12 @@ final class CrossfadeSettings {
     private static let disableForGaplessKey = "minidisc.crossfade.disableForGapless"
 
     var config: CrossfadeConfig {
-        CrossfadeConfig(duration: _duration, disableForGapless: _disableForGapless)
+        CrossfadeConfig(musicalMixEnabled: musicalMixEnabled, duration: _duration, disableForGapless: _disableForGapless)
     }
 
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
+        musicalMixEnabled = defaults.bool(forKey: "minidisc.musicalMix.enabled")
         if defaults.object(forKey: Self.durationKey) != nil {
             let stored = defaults.double(forKey: Self.durationKey)
             _duration = max(Self.minDuration, min(Self.maxDuration, stored))

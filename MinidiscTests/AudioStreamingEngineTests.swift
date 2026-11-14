@@ -456,6 +456,24 @@ struct AudioStreamingEngineTests {
         #expect(observer.states.last?.1 == promoted.playbackToken)
     }
 
+    @Test func enablingMusicalMixReplacesAnAlreadyQueuedGaplessTransition() async throws {
+        let factory = StreamingDriverFactory()
+        let engine = AudioStreamingEngine(driverFactory: { factory.make() })
+        engine.play(trackID: "one", url: url, headers: [:])
+        defer { engine.stop() }
+        factory.drivers[0].setPosition(2)
+        engine.preloadNext(trackID: "two", url: url, headers: [:], crossfadeDuration: 0, replayGainDB: 0)
+        #expect(factory.drivers[0].queuedCount == 1)
+        engine.setMusicalMixEnabled(true)
+        engine.preloadNext(trackID: "two", url: url, headers: [:], crossfadeDuration: 3, replayGainDB: 0)
+        #expect(factory.drivers.count == 2)
+        try await waitUntil { !factory.drivers[1].muted }
+        #expect(factory.drivers[0].wasStopped)
+        #expect(engine.progress >= 2 && engine.progress < 2.5)
+        #expect(factory.drivers[1].queuedCount == 0)
+        #expect(factory.drivers[1].state == .playing)
+    }
+
     @Test func pauseDuringCrossfadeRetainsTheUpcomingSongForResume() async throws {
         let factory = StreamingDriverFactory()
         let engine = AudioStreamingEngine(driverFactory: { factory.make() })

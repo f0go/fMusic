@@ -8,29 +8,49 @@ struct CrossfadeSettingsSection: View {
         let duration = cf?.duration ?? 0
 
         Section {
-            Stepper(
-                value: Binding(
-                    get: { cf?.duration ?? 0 },
-                    set: { newVal in
-                        cf?.duration = newVal
-                        Task { await container?.playerService.crossfadeSettingsDidChange() }
+            Toggle(isOn: Binding(
+                get: { cf?.musicalMixEnabled ?? false },
+                set: { enabled in
+                    cf?.musicalMixEnabled = enabled
+                    Task { await container?.playerService.crossfadeSettingsDidChange() }
+                }
+            )) {
+                Text("Musical Mix (Beta)")
+            }
+            .accessibilityIdentifier("settings.musicalMix")
+            .tint(Color(.systemGreen))
+
+            if cf?.musicalMixEnabled == true {
+                Text("Analyzes rhythm on this device to align transitions and gently match tempo. Uses a temporary extra download for streamed tracks. Falls back to crossfade when analysis is uncertain. AirPlay uses sequential playback.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
+
+            if cf?.musicalMixEnabled != true {
+                Stepper(
+                    value: Binding(
+                        get: { cf?.duration ?? 0 },
+                        set: { newVal in
+                            cf?.duration = newVal
+                            Task { await container?.playerService.crossfadeSettingsDidChange() }
+                        }
+                    ),
+                    in: 0...5,
+                    step: 0.5
+                ) {
+                    HStack {
+                        Text("Duration")
+                            .foregroundStyle(.primary)
+                        Spacer()
+                        Text(crossfadeDurationLabel(duration))
+                            .foregroundStyle(.secondary)
+                            .monospacedDigit()
+                            .font(.body.weight(.medium))
                     }
-                ),
-                in: 0...5,
-                step: 0.5
-            ) {
-                HStack {
-                    Text("Duration")
-                        .foregroundStyle(.primary)
-                    Spacer()
-                    Text(crossfadeDurationLabel(duration))
-                        .foregroundStyle(.secondary)
-                        .monospacedDigit()
-                        .font(.body.weight(.medium))
                 }
             }
 
-            if duration > 0 {
+            if duration > 0 && cf?.musicalMixEnabled != true {
                 Toggle(isOn: Binding(
                     get: { cf?.disableForGapless ?? true },
                     set: { newVal in
@@ -46,11 +66,13 @@ struct CrossfadeSettingsSection: View {
         } header: {
             Text("Crossfade")
         } footer: {
-            Text("Fades one track into the next over the set time. Set Off for no fade. The toggle keeps gapless albums and live mixes seamless.")
+            if cf?.musicalMixEnabled != true {
+                Text("Fades one track into the next over the set time. Set Off for no fade. The toggle keeps gapless albums and live mixes seamless.")
+            }
         }
     }
 
     private func crossfadeDurationLabel(_ seconds: Double) -> String {
-        seconds == 0 ? "Off" : "\(String(format: "%.1f", seconds)) s"
+        seconds == 0 ? String(localized: "Off") : "\(String(format: "%.1f", seconds)) s"
     }
 }

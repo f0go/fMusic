@@ -1,6 +1,296 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+  "Musical Mix On": {
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Musical Mix On"
+        }
+      },
+      "de": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Musikalischer Mix ein"
+        }
+      },
+      "el": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Μουσική μίξη ενεργή"
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Mezcla musical activada"
+        }
+      },
+      "fr": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Mix musical activé"
+        }
+      },
+      "it": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Mix musicale attivato"
+        }
+      },
+      "ja": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "ミュージックミックス：オン"
+        }
+      },
+      "zh-Hans": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "智能混音已开启"
+        }
+      },
+      "zh-Hant": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "智慧混音已開啟"
+        }
+      }
+    }
+  },
+  "Musical Mix Off": {
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Musical Mix Off"
+        }
+      },
+      "de": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Musikalischer Mix aus"
+        }
+      },
+      "el": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Μουσική μίξη ανενεργή"
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Mezcla musical desactivada"
+        }
+      },
+      "fr": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Mix musical désactivé"
+        }
+      },
+      "it": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Mix musicale disattivato"
+        }
+      },
+      "ja": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "ミュージックミックス：オフ"
+        }
+      },
+      "zh-Hans": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "智能混音已关闭"
+        }
+      },
+      "zh-Hant": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "智慧混音已關閉"
+        }
+      }
+    }
+  },
+  "Off": {
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Off"
+        }
+      },
+      "de": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Aus"
+        }
+      },
+      "el": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Ανενεργό"
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Desactivado"
+        }
+      },
+      "fr": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Désactivé"
+        }
+      },
+      "it": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Disattivato"
+        }
+      },
+      "ja": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "オフ"
+        }
+      },
+      "zh-Hans": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "关闭"
+        }
+      },
+      "zh-Hant": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "關閉"
+        }
+      }
+    }
+  },
+  "Musical Mix (Beta)": {
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Musical Mix (Beta)"
+        }
+      },
+      "de": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Musikalischer Mix (Beta)"
+        }
+      },
+      "el": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Μουσική μίξη (Beta)"
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Mezcla musical (Beta)"
+        }
+      },
+      "fr": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Mix musical (bêta)"
+        }
+      },
+      "it": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Mix musicale (beta)"
+        }
+      },
+      "ja": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "ミュージックミックス（ベータ）"
+        }
+      },
+      "zh-Hans": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "智能混音（测试版）"
+        }
+      },
+      "zh-Hant": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "智慧混音（測試版）"
+        }
+      }
+    }
+  },
+  "Analyzes rhythm on this device to align transitions and gently match tempo. Uses a temporary extra download for streamed tracks. Falls back to crossfade when analysis is uncertain. AirPlay uses sequential playback.": {
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Analyzes rhythm on this device to align transitions and gently match tempo. Uses a temporary extra download for streamed tracks. Falls back to crossfade when analysis is uncertain. AirPlay uses sequential playback."
+        }
+      },
+      "de": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Analysiert den Rhythmus auf diesem Gerät, um Übergänge auszurichten und das Tempo sanft anzupassen. Streaming-Titel werden zusätzlich vorübergehend geladen. Bei unsicherer Analyse wird Crossfade verwendet. AirPlay spielt Titel nacheinander ab."
+        }
+      },
+      "el": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Αναλύει τον ρυθμό στη συσκευή για ευθυγράμμιση μεταβάσεων και ήπια προσαρμογή τέμπο. Τα κομμάτια ροής απαιτούν επιπλέον προσωρινή λήψη. Αν η ανάλυση είναι αβέβαιη, χρησιμοποιείται ομαλή μετάβαση. Το AirPlay παίζει διαδοχικά."
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Analiza el ritmo en este dispositivo para alinear transiciones y ajustar suavemente el tempo. Las canciones en streaming requieren una descarga temporal adicional. Si el análisis es incierto, usa el fundido cruzado. AirPlay reproduce las canciones consecutivamente."
+        }
+      },
+      "fr": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Analyse le rythme sur cet appareil pour aligner les transitions et ajuster doucement le tempo. Les titres en streaming nécessitent un téléchargement temporaire supplémentaire. Si l’analyse est incertaine, utilise le fondu enchaîné. AirPlay lit les titres à la suite."
+        }
+      },
+      "it": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Analizza il ritmo sul dispositivo per allineare le transizioni e adattare gradualmente il tempo. I brani in streaming richiedono un download temporaneo aggiuntivo. Se l’analisi è incerta, usa la dissolvenza incrociata. AirPlay riproduce i brani in sequenza."
+        }
+      },
+      "ja": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "このデバイスでリズムを解析し、曲の切り替えとテンポを緩やかに合わせます。ストリーミング曲には一時的な追加ダウンロードが必要です。解析が不確かな場合はクロスフェードを使います。AirPlayでは順番に再生します。"
+        }
+      },
+      "zh-Hans": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "在此设备上分析节奏，对齐过渡并轻微调整速度。流媒体歌曲需要额外临时下载。分析结果不确定时使用交叉淡化。AirPlay按顺序播放。"
+        }
+      },
+      "zh-Hant": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "在此裝置上分析節奏，對齊過渡並輕微調整速度。串流歌曲需要額外暫時下載。分析結果不確定時使用交叉淡化。AirPlay依序播放。"
+        }
+      }
+    }
+  },
     "" : {
       "localizations" : {
         "de" : {
@@ -15427,6 +15717,7 @@
       }
     },
     "Find songs, albums, artists, and playlists from your server." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -15474,6 +15765,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "從你的伺服器尋找歌曲、專輯、藝人和播放列表。"
+          }
+        }
+      }
+    },
+    "Find songs, albums, artists, and playlists in your library." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Find songs, albums, artists, and playlists in your library."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Retrouvez les titres, albums, artistes et playlists de votre bibliothèque."
           }
         }
       }
@@ -16422,6 +16729,7 @@
       }
     },
     "Get Started" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -20704,9 +21012,6 @@
           }
         }
       }
-    },
-    "Local Files" : {
-
     },
     "LRCLIB" : {
       "extractionState" : "manual",
@@ -36064,6 +36369,7 @@
       }
     },
     "Stream your library from your own server.\nNo subscriptions. No big tech." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -45344,22 +45650,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "你的年度以 %@ 揭開序幕"
-          }
-        }
-      }
-    },
-    "Find songs, albums, artists, and playlists in your library." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Find songs, albums, artists, and playlists in your library."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Retrouvez les titres, albums, artistes et playlists de votre bibliothèque."
           }
         }
       }

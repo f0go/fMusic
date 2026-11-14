@@ -19,6 +19,8 @@ nonisolated protocol StreamingAudioDriver: AnyObject, Sendable {
     var isSeekable: Bool { get }
     var volume: Float { get set }
     var muted: Bool { get set }
+    var playbackRate: Float { get set }
+    func applyMixBass(dB: Float)
     func applyGain(dB: Float)
     func play(url: URL, headers: [String: String])
     func queue(url: URL, headers: [String: String])
@@ -32,7 +34,7 @@ nonisolated protocol StreamingAudioDriver: AnyObject, Sendable {
 /// the engine serializes its control calls. Raw URL-based entry identifiers never leave it.
 nonisolated final class AudioStreamingDriver: StreamingAudioDriver, AudioPlayerDelegate, @unchecked Sendable {
     private let player: AudioPlayer
-    private let gain = AVAudioUnitEQ(numberOfBands: 0)
+    private let gain = AVAudioUnitEQ(numberOfBands: 1)
     private let callbackLock = NSLock()
     private var callback: (@Sendable (StreamingDriverEvent) -> Void)?
     private var identities: [(AudioEntryId, UUID)] = []
@@ -47,6 +49,11 @@ nonisolated final class AudioStreamingDriver: StreamingAudioDriver, AudioPlayerD
             enableLogs: false
         ))
         player.loopMode = .off // Repeat belongs to PlayerService, including authenticated URLs.
+        let bass = gain.bands[0]
+        bass.filterType = .lowShelf
+        bass.frequency = 180
+        bass.gain = 0
+        bass.bypass = false
         player.attach(node: gain)
         player.delegate = self
     }
@@ -68,6 +75,15 @@ nonisolated final class AudioStreamingDriver: StreamingAudioDriver, AudioPlayerD
     var muted: Bool {
         get { player.muted }
         set { player.muted = newValue }
+    }
+
+    var playbackRate: Float {
+        get { player.rate }
+        set { player.rate = min(1.25, max(0.8, newValue)) }
+    }
+
+    func applyMixBass(dB: Float) {
+        gain.bands[0].gain = min(0, max(-18, dB.isFinite ? dB : 0))
     }
 
     func applyGain(dB: Float) { gain.globalGain = min(24, max(-96, dB.isFinite ? dB : 0)) }
@@ -138,4 +154,10 @@ nonisolated final class AudioStreamingDriver: StreamingAudioDriver, AudioPlayerD
     }
     func audioPlayerDidCancel(player: AudioPlayer, queuedItems: [AudioEntryId]) {}
     func audioPlayerDidReadMetadata(player: AudioPlayer, metadata: [String: String]) {}
+}
+
+// Test drivers and transports without time stretching retain normal speed.
+extension StreamingAudioDriver {
+    nonisolated func applyMixBass(dB: Float) {}
+    nonisolated var playbackRate: Float { get { 1 } set {} }
 }

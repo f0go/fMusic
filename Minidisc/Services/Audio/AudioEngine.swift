@@ -167,6 +167,7 @@ nonisolated protocol AudioEngine: AnyObject, Sendable {
     /// True when idle and ready to start a source (the cold-restore path checks this).
     var isReady: Bool { get }
 
+    func setMusicalMixEnabled(_ enabled: Bool)
     func applyReplayGain(dB: Float)
 
     /// Prepares the next `play` target. A zero crossfade uses native sequential playback;
@@ -200,6 +201,7 @@ nonisolated protocol AudioEngine: AnyObject, Sendable {
 }
 
 extension AudioEngine {
+    nonisolated func setMusicalMixEnabled(_ enabled: Bool) {}
     nonisolated var preservesPreloadOnNetworkChange: Bool { false }
     nonisolated var preservesPreloadOnAirPlayChange: Bool { false }
 }
