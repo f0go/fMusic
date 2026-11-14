@@ -15427,6 +15427,7 @@
       }
     },
     "Find songs, albums, artists, and playlists from your server." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -15474,6 +15475,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "從你的伺服器尋找歌曲、專輯、藝人和播放列表。"
+          }
+        }
+      }
+    },
+    "Find songs, albums, artists, and playlists in your library." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Find songs, albums, artists, and playlists in your library."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Retrouvez les titres, albums, artistes et playlists de votre bibliothèque."
           }
         }
       }
@@ -16422,6 +16439,7 @@
       }
     },
     "Get Started" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -20704,9 +20722,6 @@
           }
         }
       }
-    },
-    "Local Files" : {
-
     },
     "LRCLIB" : {
       "extractionState" : "manual",
@@ -36064,6 +36079,7 @@
       }
     },
     "Stream your library from your own server.\nNo subscriptions. No big tech." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -45344,22 +45360,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "你的年度以 %@ 揭開序幕"
-          }
-        }
-      }
-    },
-    "Find songs, albums, artists, and playlists in your library." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Find songs, albums, artists, and playlists in your library."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Retrouvez les titres, albums, artistes et playlists de votre bibliothèque."
           }
         }
       }
