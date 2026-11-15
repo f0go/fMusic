@@ -14,7 +14,7 @@ struct LocalMusicFoldersView: View {
                         Image(systemName: "music.note.house")
                     }
                     .font(.headline)
-                    Text("Choose a music folder in Files. Minidisc finds songs in its subfolders and organizes them into albums and artists. No server is needed.", tableName: "LocalMusic")
+                    Text("Choose a music folder in Files. Mus1c finds songs in its subfolders and organizes them into albums and artists. No server is needed.", tableName: "LocalMusic")
                         .foregroundStyle(.secondary)
                 }
                 Section {
@@ -52,7 +52,7 @@ struct LocalMusicFoldersView: View {
                     .accessibilityIdentifier("localMusic.addFolder")
                 } footer: {
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("Your files stay in place. Removing a folder from Minidisc does not delete them.", tableName: "LocalMusic")
+                        Text("Your files stay in place. Removing a folder from Mus1c does not delete them.", tableName: "LocalMusic")
                         Text("Download cloud files in Files before playing them.", tableName: "LocalMusic")
                     }
                 }
@@ -68,7 +68,7 @@ struct LocalMusicFoldersView: View {
                             Label { Text("Refresh Music", tableName: "LocalMusic") } icon: { Image(systemName: "arrow.clockwise") }
                         }
                     } footer: {
-                        Text("Changes in your folders are checked while Minidisc is open. You can also refresh after adding music in Files.", tableName: "LocalMusic")
+                        Text("Changes in your folders are checked while Mus1c is open. You can also refresh after adding music in Files.", tableName: "LocalMusic")
                     }
                 }
                 if let error = library.errorMessage {

@@ -941,7 +941,7 @@ actor PlayerService: PlayerServiceProtocol {
             Logger.player.warning("[RADIO-CODEC] rejected stream, content-type=\(contentType, privacy: .public)")
             await MainActor.run {
                 toastService.show(
-                    "This radio uses an unsupported audio format. Minidisc can play MP3 and AAC live streams currently.",
+                    "This radio uses an unsupported audio format. Mus1c can play MP3 and AAC live streams currently.",
                     style: .error,
                     duration: 5.0
                 )

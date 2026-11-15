@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8785D13D3012A3A500208269 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 8785D13C3012A3A500208269 /* AppIcon.icon */; };
 		A57100013000000000000001 /* AudioStreaming in Frameworks */ = {isa = PBXBuildFile; productRef = A57100013000000000000002 /* AudioStreaming */; };
 		DBA4A77D2F9BE3C8008BC5A9 /* SwiftSonic in Frameworks */ = {isa = PBXBuildFile; productRef = DBA4A77C2F9BE3C8008BC5A9 /* SwiftSonic */; };
 /* End PBXBuildFile section */
@@ -30,7 +29,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		8785D13C3012A3A500208269 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
 		DBA4A7512F9BBFCB008BC5A9 /* Minidisc.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Minidisc.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DBA4A75E2F9BBFCC008BC5A9 /* MinidiscTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MinidiscTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DBA4A7682F9BBFCC008BC5A9 /* MinidiscUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MinidiscUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -101,7 +99,6 @@
 				DBA4A7612F9BBFCC008BC5A9 /* MinidiscTests */,
 				DBA4A76B2F9BBFCC008BC5A9 /* MinidiscUITests */,
 				DBA4A7522F9BBFCB008BC5A9 /* Products */,
-				8785D13C3012A3A500208269 /* AppIcon.icon */,
 			);
 			sourceTree = "<group>";
 		};
@@ -249,7 +246,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8785D13D3012A3A500208269 /* AppIcon.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -434,7 +430,7 @@
 		DBA4A7732F9BBFCC008BC5A9 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = Mus1cAppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Minidisc/Minidisc.entitlements;
 				CODE_SIGN_STYLE = Automatic;
@@ -444,13 +440,13 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Minidisc/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Minidisc;
+				INFOPLIST_KEY_CFBundleDisplayName = Mus1c;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music";
-				INFOPLIST_KEY_NSCameraUsageDescription = "Minidisc needs to access your camera to take pictures for playlist artworks";
-				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "Minidisc needs access to your local network to connect to your Navidrome or Subsonic server.";
-				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Minidisc needs to access your library to upload pictures for playlists";
-				INFOPLIST_KEY_NSSiriUsageDescription = "Allow Siri to search your Minidisc library and control music playback.";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Mus1c needs to access your camera to take pictures for playlist artworks";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "Mus1c needs access to your local network to connect to your Navidrome or Subsonic server.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Mus1c needs to access your library to upload pictures for playlists";
+				INFOPLIST_KEY_NSSiriUsageDescription = "Allow Siri to search your Mus1c library and control music playback.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
@@ -488,7 +484,7 @@
 		DBA4A7742F9BBFCC008BC5A9 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = Mus1cAppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Minidisc/Minidisc.entitlements;
 				CODE_SIGN_STYLE = Automatic;
@@ -498,13 +494,13 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Minidisc/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Minidisc;
+				INFOPLIST_KEY_CFBundleDisplayName = Mus1c;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music";
-				INFOPLIST_KEY_NSCameraUsageDescription = "Minidisc needs to access your camera to take pictures for playlist artworks";
-				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "Minidisc needs access to your local network to connect to your Navidrome or Subsonic server.";
-				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Minidisc needs to access your library to upload pictures for playlists";
-				INFOPLIST_KEY_NSSiriUsageDescription = "Allow Siri to search your Minidisc library and control music playback.";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Mus1c needs to access your camera to take pictures for playlist artworks";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "Mus1c needs access to your local network to connect to your Navidrome or Subsonic server.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Mus1c needs to access your library to upload pictures for playlists";
+				INFOPLIST_KEY_NSSiriUsageDescription = "Allow Siri to search your Mus1c library and control music playback.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;

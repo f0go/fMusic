@@ -27,6 +27,15 @@ struct MusicIntentService {
     }
 
     func search(_ text: String) async throws -> [MusicIntentRecord] {
+        guard !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return try await suggestions() }
+        let context = try context()
+        return try await MusicIntentSearch.results(for: text) { term in
+            try validate(context)
+            return try await searchLiteral(term)
+        }
+    }
+
+    private func searchLiteral(_ text: String) async throws -> [MusicIntentRecord] {
         container.playbackDiagnostics.record(.musicIntent(.searchStarted))
         let term = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !term.isEmpty else { return try await suggestions() }
@@ -65,6 +74,14 @@ struct MusicIntentService {
     }
 
     func searchPlaylists(_ text: String) async throws -> [MusicIntentRecord] {
+        let context = try context()
+        return try await MusicIntentSearch.results(for: text) { term in
+            try validate(context)
+            return try await searchPlaylistsLiteral(term)
+        }
+    }
+
+    private func searchPlaylistsLiteral(_ text: String) async throws -> [MusicIntentRecord] {
         container.playbackDiagnostics.record(.musicIntent(.searchStarted))
         let context = try context()
         let term = text.trimmingCharacters(in: .whitespacesAndNewlines)

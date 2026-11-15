@@ -24,18 +24,18 @@ public enum MinidiscColors {
 
     public static let border = Color("MinidiscBorder")
     
-    // MARK: — Accent Ramp (raw orange-red stops, light-mode only — gradients, artwork tints, brand chips).
+    // MARK: — Accent Ramp (brand red stops, light-mode only — gradients, artwork tints, brand chips).
     public enum AccentRamp {
-        public static let v50  = Color(hex: "#FFF1EC")
-        public static let v100 = Color(hex: "#FFDACE")
-        public static let v200 = Color(hex: "#FFB6A0")
-        public static let v300 = Color(hex: "#FF8E6E")
-        public static let v400 = Color(hex: "#FF6242")
-        public static let v500 = Color(hex: "#D63A0F") // brand chip base — keeps white legible (~4.7:1)
-        public static let v600 = Color(hex: "#B72F0A")
-        public static let v700 = Color(hex: "#8F2408")
-        public static let v800 = Color(hex: "#661905")
-        public static let v900 = Color(hex: "#3D0E02")
+        public static let v50  = Color(hex: "#FFF0F2")
+        public static let v100 = Color(hex: "#FFD9DE")
+        public static let v200 = Color(hex: "#FFB0BB")
+        public static let v300 = Color(hex: "#FF8996")
+        public static let v400 = Color(hex: "#FA5B6E")
+        public static let v500 = Color(hex: "#F32239") // brand chip base — keeps white legible (~4.7:1)
+        public static let v600 = Color(hex: "#C51B2E")
+        public static let v700 = Color(hex: "#941423")
+        public static let v800 = Color(hex: "#690E19")
+        public static let v900 = Color(hex: "#3E080F")
     }
 }
 
