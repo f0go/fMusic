@@ -166,34 +166,34 @@
         }
       }
     },
-    "Changes in your folders are checked while Minidisc is open. You can also refresh after adding music in Files." : {
+    "Changes in your folders are checked while Mus1c is open. You can also refresh after adding music in Files." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Changes in your folders are checked while Minidisc is open. You can also refresh after adding music in Files."
+            "value" : "Changes in your folders are checked while Mus1c is open. You can also refresh after adding music in Files."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Les changements dans vos dossiers sont vérifiés lorsque Minidisc est ouvert. Vous pouvez aussi actualiser après avoir ajouté de la musique dans Fichiers."
+            "value" : "Les changements dans vos dossiers sont vérifiés lorsque Mus1c est ouvert. Vous pouvez aussi actualiser après avoir ajouté de la musique dans Fichiers."
           }
         }
       }
     },
-    "Choose a music folder in Files. Minidisc finds songs in its subfolders and organizes them into albums and artists. No server is needed." : {
+    "Choose a music folder in Files. Mus1c finds songs in its subfolders and organizes them into albums and artists. No server is needed." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Choose a music folder in Files. Minidisc finds songs in its subfolders and organizes them into albums and artists. No server is needed."
+            "value" : "Choose a music folder in Files. Mus1c finds songs in its subfolders and organizes them into albums and artists. No server is needed."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Choisissez un dossier de musique dans Fichiers. Minidisc trouve les morceaux dans ses sous-dossiers et les classe par albums et artistes. Aucun serveur nécessaire."
+            "value" : "Choisissez un dossier de musique dans Fichiers. Mus1c trouve les morceaux dans ses sous-dossiers et les classe par albums et artistes. Aucun serveur nécessaire."
           }
         }
       }
@@ -810,60 +810,60 @@
         }
       }
     },
-    "This file is unavailable. Download or restore it in Files, then refresh Minidisc." : {
+    "This file is unavailable. Download or restore it in Files, then refresh Mus1c." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Diese Datei ist nicht verfügbar. Lade sie in Dateien herunter oder stelle sie wieder her und aktualisiere dann Minidisc."
+            "value" : "Diese Datei ist nicht verfügbar. Lade sie in Dateien herunter oder stelle sie wieder her und aktualisiere dann Mus1c."
           }
         },
         "el" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Αυτό το αρχείο δεν είναι διαθέσιμο. Κατεβάστε το ή επαναφέρετέ το στα Αρχεία και ανανεώστε το Minidisc."
+            "value" : "Αυτό το αρχείο δεν είναι διαθέσιμο. Κατεβάστε το ή επαναφέρετέ το στα Αρχεία και ανανεώστε το Mus1c."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "This file is unavailable. Download or restore it in Files, then refresh Minidisc."
+            "value" : "This file is unavailable. Download or restore it in Files, then refresh Mus1c."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Este archivo no está disponible. Descárgalo o restáuralo en Archivos y actualiza Minidisc."
+            "value" : "Este archivo no está disponible. Descárgalo o restáuralo en Archivos y actualiza Mus1c."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ce fichier est indisponible. Téléchargez-le ou restaurez-le dans Fichiers, puis actualisez Minidisc."
+            "value" : "Ce fichier est indisponible. Téléchargez-le ou restaurez-le dans Fichiers, puis actualisez Mus1c."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Questo file non è disponibile. Scaricalo o ripristinalo in File, poi aggiorna Minidisc."
+            "value" : "Questo file non è disponibile. Scaricalo o ripristinalo in File, poi aggiorna Mus1c."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "このファイルを利用できません。「ファイル」でダウンロードまたは復元してから、Minidiscを更新してください。"
+            "value" : "このファイルを利用できません。「ファイル」でダウンロードまたは復元してから、Mus1cを更新してください。"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "此文件不可用。请在“文件”中下载或恢复它，然后刷新 Minidisc。"
+            "value" : "此文件不可用。请在“文件”中下载或恢复它，然后刷新 Mus1c。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "此檔案無法使用。請在「檔案」中下載或回復它，然後重新整理 Minidisc。"
+            "value" : "此檔案無法使用。請在「檔案」中下載或回復它，然後重新整理 Mus1c。"
           }
         }
       }
@@ -1174,60 +1174,60 @@
         }
       }
     },
-    "Your files stay in place. Removing a folder from Minidisc does not delete them." : {
+    "Your files stay in place. Removing a folder from Mus1c does not delete them." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deine Dateien bleiben an ihrem Speicherort. Wenn du einen Ordner aus Minidisc entfernst, werden seine Dateien nicht gelöscht."
+            "value" : "Deine Dateien bleiben an ihrem Speicherort. Wenn du einen Ordner aus Mus1c entfernst, werden seine Dateien nicht gelöscht."
           }
         },
         "el" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Τα αρχεία σας παραμένουν στη θέση τους. Η αφαίρεση ενός φακέλου από το Minidisc δεν τα διαγράφει."
+            "value" : "Τα αρχεία σας παραμένουν στη θέση τους. Η αφαίρεση ενός φακέλου από το Mus1c δεν τα διαγράφει."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Your files stay in place. Removing a folder from Minidisc does not delete them."
+            "value" : "Your files stay in place. Removing a folder from Mus1c does not delete them."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tus archivos permanecen en su ubicación. Quitar una carpeta de Minidisc no los elimina."
+            "value" : "Tus archivos permanecen en su ubicación. Quitar una carpeta de Mus1c no los elimina."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vos fichiers restent à leur emplacement. Retirer un dossier de Minidisc ne les supprime pas."
+            "value" : "Vos fichiers restent à leur emplacement. Retirer un dossier de Mus1c ne les supprime pas."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "I tuoi file restano nella loro posizione. Rimuovere una cartella da Minidisc non li elimina."
+            "value" : "I tuoi file restano nella loro posizione. Rimuovere una cartella da Mus1c non li elimina."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ファイルは元の場所に保存されたままです。Minidiscからフォルダを削除しても、ファイルは削除されません。"
+            "value" : "ファイルは元の場所に保存されたままです。Mus1cからフォルダを削除しても、ファイルは削除されません。"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "文件会保留在原位置。从 Minidisc 移除文件夹不会删除其中的文件。"
+            "value" : "文件会保留在原位置。从 Mus1c 移除文件夹不会删除其中的文件。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "檔案會保留在原位置。從 Minidisc 移除檔案夾不會刪除其中的檔案。"
+            "value" : "檔案會保留在原位置。從 Mus1c 移除檔案夾不會刪除其中的檔案。"
           }
         }
       }

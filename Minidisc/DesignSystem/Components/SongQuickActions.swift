@@ -19,7 +19,7 @@ struct SongQuickActions: ViewModifier {
                     } label: {
                         Label("Play Next", systemImage: "text.line.first.and.arrowtriangle.forward")
                     }
-                    .tint(.orange)
+                    .tint(MinidiscColors.accent)
                     Button {
                         HapticFeedback.light.trigger()
                         Task { await container?.playerService.addToQueue(song) }

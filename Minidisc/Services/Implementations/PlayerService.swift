@@ -304,6 +304,7 @@ actor PlayerService: PlayerServiceProtocol {
         self.cacheSession = URLSession(configuration: cacheConfig)
 
         self.engine = engine
+        engine.setMusicalMixEnabled(initialCrossfadeConfig.musicalMixEnabled)
         let bridge = AudioEngineBridge()
         self.engineBridge = bridge
         bridge.connect(to: self)
@@ -940,7 +941,7 @@ actor PlayerService: PlayerServiceProtocol {
             Logger.player.warning("[RADIO-CODEC] rejected stream, content-type=\(contentType, privacy: .public)")
             await MainActor.run {
                 toastService.show(
-                    "This radio uses an unsupported audio format. Minidisc can play MP3 and AAC live streams currently.",
+                    "This radio uses an unsupported audio format. Mus1c can play MP3 and AAC live streams currently.",
                     style: .error,
                     duration: 5.0
                 )
@@ -1414,6 +1415,7 @@ actor PlayerService: PlayerServiceProtocol {
 
     func crossfadeSettingsDidChange() async {
         crossfadeConfig = await MainActor.run { crossfadeSettings.config }
+        engine.setMusicalMixEnabled(crossfadeConfig.musicalMixEnabled)
         await refreshStandbyPreload()
         Logger.player.info(
             "[CROSSFADE] settings duration=\(self.crossfadeConfig.duration, format: .fixed(precision: 1))s keepAlbumTracksBackToBack=\(self.crossfadeConfig.disableForGapless, privacy: .public)"
@@ -3541,9 +3543,11 @@ actor PlayerService: PlayerServiceProtocol {
     nonisolated static func effectiveCrossfadeOverlap(
         duration: Double,
         disableForGapless: Bool,
-        isGaplessPair: Bool
+        isGaplessPair: Bool,
+        musicalMixEnabled: Bool = false
     ) -> Double {
         guard duration > 0 else { return 0 }
+        if musicalMixEnabled { return min(MusicalMixPlan.maximumOverlap, duration) }
         return disableForGapless && isGaplessPair ? 0 : duration
     }
 
@@ -3573,7 +3577,7 @@ actor PlayerService: PlayerServiceProtocol {
             )
             cancelPendingCacheDownload()
         }
-        guard PlayerService.shouldSchedulePrefetch(crossfadeDuration: crossfadeConfig.duration, remaining: remaining) else { return }
+        guard PlayerService.shouldSchedulePrefetch(crossfadeDuration: crossfadeConfig.musicalMixEnabled ? 90 : crossfadeConfig.duration, remaining: remaining) else { return }
 
         let nextIndex = currentIndex + 1
         let resolved: (nextSong: DisplayableSong, serverId: UUID?)? = await MainActor.run {
@@ -3654,9 +3658,10 @@ actor PlayerService: PlayerServiceProtocol {
         ) else { return }
         // A route/settings change may occur while resolution is suspended.
         let overlap = isAirPlayActive ? 0 : Self.effectiveCrossfadeOverlap(
-            duration: crossfadeConfig.duration,
+            duration: crossfadeConfig.musicalMixEnabled ? max(3, crossfadeConfig.duration) : crossfadeConfig.duration,
             disableForGapless: crossfadeConfig.disableForGapless,
-            isGaplessPair: isPair
+            isGaplessPair: isPair,
+            musicalMixEnabled: crossfadeConfig.musicalMixEnabled
         )
         engine.preloadNext(
             trackID: songId,

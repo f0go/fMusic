@@ -38,6 +38,7 @@ struct FullPlayerView: View {
     var initialArtwork: PlayerArtworkSnapshot? = nil
     var dismissAction: () -> Void = {}
 
+    @ScaledMetric(relativeTo: .body) private var queuePillIconHeight: CGFloat = 28
     @State private var vm = FullPlayerViewModel()
     @State private var playlistAddition = PlaylistAddition()
     @State private var showLyrics = false
@@ -320,6 +321,13 @@ struct FullPlayerView: View {
                 Task { await container?.playerService.setAutoExtendEnabled(!playerState.isAutoExtendEnabled) }
             }
             .disabled(playerState.currentTrack?.isLocalFile == true)
+            queuePill(systemImage: "waveform.path", isActive: container?.crossfadeSettings.musicalMixEnabled == true,
+                      label: container?.crossfadeSettings.musicalMixEnabled == true ? "Musical Mix On" : "Musical Mix Off") {
+                guard let container else { return }
+                container.crossfadeSettings.musicalMixEnabled.toggle()
+                Task { await container.playerService.crossfadeSettingsDidChange() }
+            }
+            .accessibilityIdentifier("player.queue.musicalMix")
         }
     }
 
@@ -332,7 +340,7 @@ struct FullPlayerView: View {
             Image(systemName: systemImage)
                 .font(.body)
                 .foregroundStyle(isActive ? Color.white : vm.secondaryContentColor)
-                .frame(height: 24)
+                .frame(height: queuePillIconHeight)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, MinidiscSpacing.s)
                 .background {
@@ -341,6 +349,7 @@ struct FullPlayerView: View {
         }
         .buttonStyle(.plain)
         .accessibilityLabel(label)
+        .accessibilityAddTraits(isActive ? .isSelected : [])
     }
 
     private var topBar: some View {

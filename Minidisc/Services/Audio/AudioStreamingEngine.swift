@@ -1,13 +1,17 @@
 import Foundation
+import OSLog
 
 /// Owns AudioStreaming's native sequential queue and an independent incoming crossfade deck.
 /// PlayerService remains authoritative for transport intent, the logical queue and system recovery.
 nonisolated final class AudioStreamingEngine: AudioEngine, @unchecked Sendable {
-    private final class Item {
+    private final class Item: @unchecked Sendable {
         let token: AudioEnginePlaybackToken
         let trackID: String
         let url: URL
         let headers: [String: String]
+        var intro: MusicalGrid?
+        var outro: MusicalGrid?
+        var analysisTask: Task<Void, Never>?
         var gain: Float
         var entryID: UUID?
         var startedAt: Date?
@@ -28,6 +32,8 @@ nonisolated final class AudioStreamingEngine: AudioEngine, @unchecked Sendable {
         var lastPosition: Double = 0
         var ended = false
         var pendingEnd: Double?
+        var rateRecoveryStart: Double?
+        var rateRecoveryRate: Float = 1
 
         init(driver: any StreamingAudioDriver, item: Item) {
             self.driver = driver; self.item = item
@@ -39,12 +45,20 @@ nonisolated final class AudioStreamingEngine: AudioEngine, @unchecked Sendable {
         var overlap: Double
         var queued = false
         var deck: Deck?
+        var bridgeStartRate: Float?
+        var plan: MusicalMixPlan?
+        var loggedPlanRejection = false
+        var cueRequested = false
+        var cued = false
+        var cueLastFrames: Int?
+        var cueAdvances = 0
         var rampDuration: Double?
         var lastIncomingPosition: Double = 0
 
         init(item: Item, overlap: Double) { self.item = item; self.overlap = overlap }
     }
 
+    private var musicalMixEnabled = false
     private let lock = NSRecursiveLock()
     private let factory: @Sendable () -> any StreamingAudioDriver
     private let diagnostics: PlaybackDiagnostics?
@@ -76,6 +90,8 @@ nonisolated final class AudioStreamingEngine: AudioEngine, @unchecked Sendable {
 
     deinit {
         restorationTask?.cancel()
+        active?.item.analysisTask?.cancel()
+        preparation?.item.analysisTask?.cancel()
         timer?.cancel()
         active?.driver.onEvent = nil
         active?.driver.stop()
@@ -111,7 +127,13 @@ nonisolated final class AudioStreamingEngine: AudioEngine, @unchecked Sendable {
                     dispose(active)
                     self.active = incoming
                     incoming.driver.volume = userVolume
-                    incoming.driver.resume()
+                    incoming.driver.playbackRate = 1
+                    incoming.driver.applyMixBass(dB: 0)
+                    if prepared.plan != nil {
+                        incoming.item.startedAt = nil
+                        incoming.item.audibleDuration = 0
+                        incoming.driver.play(url: prepared.item.url, headers: prepared.item.headers)
+                    } else { incoming.driver.resume() }
                 } else if prepared.queued, active.pendingEnd != nil, prepared.item.entryID != nil {
                     // EOF already moved the native queue while we were paused. Adopt that
                     // confirmed entry without restarting it or skipping another song.
@@ -159,6 +181,7 @@ nonisolated final class AudioStreamingEngine: AudioEngine, @unchecked Sendable {
                 preparation.item.startedAt = nil
                 preparation.item.audibleDuration = 0
                 self.preparation = Preparation(item: preparation.item, overlap: preparation.overlap)
+                analyze(preparation.item)
             }
             timer?.cancel()
             timer = nil
@@ -251,6 +274,46 @@ nonisolated final class AudioStreamingEngine: AudioEngine, @unchecked Sendable {
     var preservesPreloadOnNetworkChange: Bool { true }
     var preservesPreloadOnAirPlayChange: Bool { true }
 
+    func setMusicalMixEnabled(_ enabled: Bool) {
+        lock.withLock {
+            musicalMixEnabled = enabled
+            if enabled {
+                if let active { analyze(active.item) }
+                if let preparation { analyze(preparation.item) }
+            }
+            if !enabled {
+                active?.item.analysisTask?.cancel()
+                active?.item.analysisTask = nil
+                preparation?.item.analysisTask?.cancel()
+                preparation?.item.analysisTask = nil
+                if preparation?.plan != nil, preparation?.rampDuration == nil {
+                    discardPreparation(reloadNativeQueue: false)
+                }
+            }
+        }
+    }
+
+    private func analyze(_ item: Item) {
+        guard musicalMixEnabled, item.analysisTask == nil,
+              item.intro == nil || item.outro == nil else { return }
+        item.analysisTask = Task.detached(priority: .utility) { [weak self, weak item] in
+            guard let item else { return }
+            let grids = await MusicalMixAnalyzer.analyzePair(url: item.url, headers: item.headers)
+            let intro = grids?.0
+            guard !Task.isCancelled else { return }
+            let outro = grids?.1
+            guard !Task.isCancelled else { return }
+            self?.lock.withLock {
+                guard !Task.isCancelled else { return }
+                item.intro = intro; item.outro = outro
+                if let outro {
+                    Logger.player.info("[MIX] analyzed outro end=\(outro.end) phase=\(outro.firstBeat) exitCue=\(outro.exitCue ?? -1)")
+                }
+                Logger.player.info("[MIX] analysis intro=\(intro?.confidence ?? 0) outro=\(outro?.confidence ?? 0) bpm=\(intro.map { 60 / $0.beat } ?? 0)")
+            }
+        }
+    }
+
     func applyReplayGain(dB: Float) {
         lock.withLock {
             gainDB = dB.isFinite ? dB : 0
@@ -268,9 +331,10 @@ nonisolated final class AudioStreamingEngine: AudioEngine, @unchecked Sendable {
         lock.withLock {
             guard active != nil else { return }
             let overlap = airPlay ? 0 : finite(crossfadeDuration)
+            if musicalMixEnabled { Logger.player.info("[MIX] preload overlap=\(overlap) position=\(self.active?.lastPosition ?? 0)") }
             if let preparation, preparation.item.trackID == trackID,
                preparation.item.url == url, preparation.item.headers == headers,
-               preparation.queued || (preparation.overlap == 0) == (overlap == 0) {
+               (preparation.queued && !(musicalMixEnabled && overlap > 0)) || (preparation.overlap == 0) == (overlap == 0) {
                 // Once sequential audio is queued, switching it to a crossfade would require
                 // restarting the current reader. Apply that mode to the next unprepared pair.
                 if !preparation.queued { preparation.overlap = overlap }
@@ -319,6 +383,7 @@ nonisolated final class AudioStreamingEngine: AudioEngine, @unchecked Sendable {
                 pending.item.startedAt = nil
                 pending.item.audibleDuration = 0
                 preparation = Preparation(item: pending.item, overlap: pending.overlap)
+                analyze(pending.item)
             }
             seekGeneration &+= 1
             seeking = true
@@ -413,10 +478,13 @@ nonisolated final class AudioStreamingEngine: AudioEngine, @unchecked Sendable {
 
     private func makeItem(trackID: String, url: URL, headers: [String: String], gain: Float) -> Item {
         nextToken &+= 1
-        return Item(token: .init(rawValue: nextToken), trackID: trackID, url: url, headers: headers, gain: gain)
+        let item = Item(token: .init(rawValue: nextToken), trackID: trackID, url: url, headers: headers, gain: gain)
+        analyze(item)
+        return item
     }
 
     private func makeDeck(_ item: Item, volume: Float) -> Deck {
+        analyze(item)
         let deck = Deck(driver: factory(), item: item)
         let id = deck.id
         deck.driver.volume = volume
@@ -426,6 +494,8 @@ nonisolated final class AudioStreamingEngine: AudioEngine, @unchecked Sendable {
     }
 
     private func dispose(_ deck: Deck) {
+        deck.item.analysisTask?.cancel()
+        deck.item.analysisTask = nil
         deck.driver.onEvent = nil
         deck.driver.stop()
     }
@@ -441,8 +511,12 @@ nonisolated final class AudioStreamingEngine: AudioEngine, @unchecked Sendable {
     private func discardPreparation(reloadNativeQueue: Bool) {
         guard let preparation else { return }
         self.preparation = nil
+        preparation.item.analysisTask?.cancel()
+        preparation.item.analysisTask = nil
         if let deck = preparation.deck { dispose(deck) }
         active?.driver.volume = userVolume
+        active?.driver.applyMixBass(dB: 0)
+        if let startRate = preparation.bridgeStartRate { active?.driver.playbackRate = startRate }
         guard reloadNativeQueue, preparation.queued, let old = active, !old.ended else { return }
 
         // 1.4.5's removeFromQueue only removes entries still in `upcoming`, not already-decoded
@@ -545,6 +619,11 @@ nonisolated final class AudioStreamingEngine: AudioEngine, @unchecked Sendable {
             let incoming: Deck
             if let deck = preparation.deck {
                 incoming = deck
+                incoming.rateRecoveryStart = incoming.driver.position
+                incoming.rateRecoveryRate = incoming.driver.playbackRate
+                // A source can end earlier than its analyzed container duration. A silent,
+                // paused cue must never become a paused active deck while Play is intended.
+                incoming.driver.resume()
                 dispose(outgoing)
             } else {
                 incoming = outgoing
@@ -553,6 +632,7 @@ nonisolated final class AudioStreamingEngine: AudioEngine, @unchecked Sendable {
             incoming.ended = false
             active = incoming
             incoming.driver.volume = userVolume
+            incoming.driver.applyMixBass(dB: 0)
             incoming.driver.applyGain(dB: incoming.item.gain)
             let currentPosition = finite(incoming.driver.position)
             incoming.lastPosition = currentPosition
@@ -587,6 +667,12 @@ nonisolated final class AudioStreamingEngine: AudioEngine, @unchecked Sendable {
             if !seeking && !restoring && !active.ended {
                 active.lastPosition = finite(active.driver.position)
             }
+            if let start = active.rateRecoveryStart {
+                let length = (active.item.intro?.beat ?? 0.5) * 32
+                let fraction = min(1, max(0, (active.lastPosition - start) / length))
+                active.driver.playbackRate = active.rateRecoveryRate + (1 - active.rateRecoveryRate) * Float(fraction)
+                if fraction >= 1 { active.rateRecoveryStart = nil }
+            }
             let now = ProcessInfo.processInfo.systemUptime
             if now - lastDiagnosticTime >= 1 {
                 lastDiagnosticTime = now
@@ -606,8 +692,71 @@ nonisolated final class AudioStreamingEngine: AudioEngine, @unchecked Sendable {
             guard shouldPlay, !seeking, !restoring, !active.ended,
                   let preparation, preparation.overlap > 0, !airPlay else { return }
             let remaining = duration - active.lastPosition
-            guard duration > 2 * preparation.overlap, remaining > 0 else { return }
-            if preparation.deck == nil, remaining <= preparation.overlap {
+            guard preparation.plan != nil || duration > 2 * preparation.overlap else { return }
+            guard remaining > 0 else { return }
+            if musicalMixEnabled, preparation.deck == nil, preparation.plan == nil,
+               let outro = active.item.outro, let intro = preparation.item.intro {
+                preparation.plan = MusicalMixPlan.make(outgoing: outro, incoming: intro, position: active.lastPosition)
+                if let plan = preparation.plan {
+                    Logger.player.info("[MIX] planned exit=\(plan.exit) entry=\(plan.entry) overlap=\(plan.overlap) rate=\(plan.incomingRate)")
+                } else if !preparation.loggedPlanRejection {
+                    preparation.loggedPlanRejection = true
+                    Logger.player.info("[MIX] plan rejected position=\(active.lastPosition) outEnd=\(outro.end) inEnd=\(intro.end)")
+                }
+            }
+            if let plan = preparation.plan {
+                if active.lastPosition >= plan.exit - 6 {
+                    if preparation.bridgeStartRate == nil { preparation.bridgeStartRate = active.driver.playbackRate }
+                    let bridge = min(1, max(0, (active.lastPosition - (plan.exit - 6)) / 6))
+                    let start = preparation.bridgeStartRate ?? 1
+                    active.driver.playbackRate = start + (plan.outgoingRate - start) * Float(bridge)
+                }
+                if preparation.deck == nil, active.lastPosition >= plan.exit - 6 {
+                    let incoming = makeDeck(preparation.item, volume: 0)
+                    preparation.deck = incoming
+                    incoming.driver.playbackRate = plan.incomingRate
+                    incoming.driver.play(url: incoming.item.url, headers: incoming.item.headers)
+                }
+                if let incoming = preparation.deck, preparation.rampDuration == nil {
+                    if preparation.cued {
+                        // Hold the decoded cue silently until the outgoing beat boundary.
+                    } else if !preparation.cueRequested, incoming.driver.isSeekable {
+                        preparation.cueRequested = true
+                        incoming.driver.seek(to: plan.entry)
+                        preparation.cueLastFrames = incoming.driver.renderedFrames
+                    } else if preparation.cueRequested, incoming.driver.state == .playing {
+                        let frames = incoming.driver.renderedFrames
+                        if let previous = preparation.cueLastFrames, frames > previous {
+                            preparation.cueAdvances += 1
+                        } else { preparation.cueAdvances = 0 }
+                        preparation.cueLastFrames = frames
+                        if preparation.cueAdvances >= 2,
+                           abs(incoming.driver.position - plan.entry) < (preparation.item.intro?.beat ?? 0.5) * 0.8 {
+                            incoming.driver.pause()
+                            preparation.cued = true
+                        }
+                    }
+                    let cueOffset = preparation.cued
+                        ? max(0, incoming.driver.position - plan.entry) * Double(plan.outgoingRate / plan.incomingRate) : 0
+                    if active.lastPosition < plan.exit + cueOffset { return }
+                    if !preparation.cued {
+                        // Never force a late or unconfirmed seek into an audible beat match.
+                        Logger.player.info("[MIX] cue not rendered in time; using safe crossfade")
+                        dispose(incoming)
+                        preparation.deck = nil
+                        preparation.plan = nil
+                        active.driver.playbackRate = preparation.bridgeStartRate ?? 1
+                        preparation.bridgeStartRate = nil
+                    } else {
+                        preparation.overlap = plan.overlap
+                        preparation.rampDuration = plan.overlap
+                        preparation.lastIncomingPosition = finite(incoming.driver.position)
+                        incoming.item.startedAt = Date()
+                        incoming.driver.resume()
+                    }
+                }
+            }
+            if preparation.deck == nil, preparation.plan == nil, remaining <= preparation.overlap {
                 let incoming = makeDeck(preparation.item, volume: 0)
                 preparation.deck = incoming
                 incoming.driver.play(url: incoming.item.url, headers: incoming.item.headers)
@@ -616,6 +765,7 @@ nonisolated final class AudioStreamingEngine: AudioEngine, @unchecked Sendable {
             let position = finite(incoming.driver.position)
             guard incoming.driver.state == .playing, position > preparation.lastIncomingPosition else {
                 active.driver.volume = userVolume
+                active.driver.applyMixBass(dB: 0)
                 incoming.driver.volume = 0
                 return
             }
@@ -624,9 +774,15 @@ nonisolated final class AudioStreamingEngine: AudioEngine, @unchecked Sendable {
                 incoming.item.startedAt = Date()
             }
             let delta = position - preparation.lastIncomingPosition
-            if delta < 1 { incoming.item.audibleDuration += delta }
+            if delta > 0, delta < 1 {
+                incoming.item.audibleDuration += delta / Double(incoming.driver.playbackRate)
+            }
             preparation.lastIncomingPosition = position
             applyVolumes()
+            if preparation.plan != nil, let ramp = preparation.rampDuration,
+               incoming.item.audibleDuration >= ramp {
+                finish(active, position: active.lastPosition)
+            }
         }
     }
 
@@ -635,11 +791,23 @@ nonisolated final class AudioStreamingEngine: AudioEngine, @unchecked Sendable {
         guard let preparation, let incoming = preparation.deck,
               let rampDuration = preparation.rampDuration, rampDuration > 0 else {
             active.driver.volume = userVolume
+            active.driver.applyMixBass(dB: 0)
             return
         }
         let fraction = min(1, max(0, incoming.item.audibleDuration / rampDuration))
-        active.driver.volume = userVolume * Float(cos(fraction * .pi / 2))
-        incoming.driver.volume = userVolume * Float(sin(fraction * .pi / 2))
+        if preparation.plan != nil {
+            let gains = MusicalMixPlan.deckGains(fraction: fraction)
+            active.driver.volume = userVolume * gains.outgoing
+            incoming.driver.volume = userVolume * gains.incoming
+        } else {
+            active.driver.volume = userVolume * Float(cos(fraction * .pi / 2))
+            incoming.driver.volume = userVolume * Float(sin(fraction * .pi / 2))
+        }
+        // Exchange the bass around the center of the blend so two kick/bass lines do not
+        // sum at full level. ReplayGain remains independent on the EQ's global gain.
+        let bassHandoff = preparation.plan == nil ? 0 : min(1, max(0, (fraction - 0.3) / 0.4))
+        active.driver.applyMixBass(dB: -18 * Float(bassHandoff))
+        incoming.driver.applyMixBass(dB: preparation.plan == nil ? 0 : -18 * Float(1 - bassHandoff))
     }
 
     private func reportCurrentPlaybackState(_ deck: Deck) {

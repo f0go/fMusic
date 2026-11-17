@@ -87,12 +87,12 @@ nonisolated enum MusicIntentError: Error, CustomLocalizedStringResourceConvertib
 
     var localizedStringResource: LocalizedStringResource {
         switch self {
-        case .noServer: "Open Minidisc and connect to your music server first."
-        case .differentServer: "Select the server used by this shortcut in Minidisc, then try again."
-        case .unavailable: "This music is unavailable. Check your connection or downloads in Minidisc."
+        case .noServer: "Open Mus1c and connect to your music server first."
+        case .differentServer: "Select the server used by this shortcut in Mus1c, then try again."
+        case .unavailable: "This music is unavailable. Check your connection or downloads in Mus1c."
         case .empty: "There are no playable tracks in this selection."
-        case .moodUnavailable: "This Mood playlist is unavailable. Open Discover in Minidisc to check your Moods."
-        case .nothingToResume: "There is no music to resume. Choose music in Minidisc first."
+        case .moodUnavailable: "This Mood playlist is unavailable. Open Discover in Mus1c to check your Moods."
+        case .nothingToResume: "There is no music to resume. Choose music in Mus1c first."
         }
     }
 }
